@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mysql:
-    image: mysql
+    image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: biblioteca_db
@@ -37,6 +37,20 @@ services:
       - SPRING_DATASOURCE_PASSWORD=mysqlpass
     ports:
       - "8082:8082"
+    networks:
+      - mynetwork
+    depends_on:
+      - mysql
+
+  inventario:
+    build: ./microservicio-inventario
+    container_name: inventario_service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/inventario_db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: user_password
     networks:
       - mynetwork
     depends_on:
