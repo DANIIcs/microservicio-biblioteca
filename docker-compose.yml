@@ -3,17 +3,19 @@ version: '3'
 services:
   mysql:
     image: mysql:8.0
+    container_name: mysql_db
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: biblioteca_db
-      MYSQL_USER: mysqluser
-      MYSQL_PASSWORD: mysqlpass
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=inventario_db
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=mysqlpass
     ports:
       - "3306:3306"
-    networks:
-      - mynetwork
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - mynetwork
+    restart: always
 
   postgres:
     image: postgres:13
@@ -32,7 +34,7 @@ services:
     build: ./microservicio-biblioteca
     container_name: biblioteca_orquestador
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/biblioteca_db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/biblioteca_db
       - SPRING_DATASOURCE_USERNAME=mysqluser
       - SPRING_DATASOURCE_PASSWORD=mysqlpass
     ports:
@@ -41,20 +43,22 @@ services:
       - mynetwork
     depends_on:
       - mysql
+    restart: always
 
   inventario:
     build: ./microservicio-inventario
-    container_name: inventario_service
+    container_name: spring_app
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/inventario_db
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpass
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/inventario_db
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: user_password
     networks:
       - mynetwork
     depends_on:
       - mysql
+    restart: always
 
   prestamo-service:
     build: ./Prestamo
