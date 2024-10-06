@@ -1,0 +1,35 @@
+services:
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: biblioteca_db
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqlpass
+    ports:
+      - "3306:3306"
+    networks:
+      - mynetwork
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  orquestador:
+    build: .
+    container_name: biblioteca_orquestador
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/biblioteca_db
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpass
+    ports:
+      - "8082:8082"
+    networks:
+      - mynetwork
+    depends_on:
+      - mysql
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  mysql_data:
