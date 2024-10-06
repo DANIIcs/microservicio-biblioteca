@@ -17,7 +17,8 @@ public class OrquestadorController {
     // Invoca al microservicio de inventario
     @GetMapping("/inventario")
     public ResponseEntity<String> obtenerInventario() {
-        String inventarioUrl = "http://localhost:8080/api/inventario"; // URL del microservicio de inventario
+        // Cambia "localhost" por el nombre del servicio definido en docker-compose (inventario)
+        String inventarioUrl = "http://inventario:8080/api/inventario"; 
         ResponseEntity<String> response = restTemplate.getForEntity(inventarioUrl, String.class);
         return ResponseEntity.ok("Respuesta del microservicio de inventario: " + response.getBody());
     }
@@ -25,8 +26,18 @@ public class OrquestadorController {
     // Invoca al microservicio de préstamos
     @GetMapping("/prestamos")
     public ResponseEntity<String> obtenerPrestamos() {
-        String prestamosUrl = "http://localhost:8081/api/prestamos"; // URL del microservicio de préstamos
+        // Cambia "localhost" por el nombre del servicio definido en docker-compose (prestamo-service)
+        String prestamosUrl = "http://prestamo-service:8001/api/prestamos"; 
         ResponseEntity<String> response = restTemplate.getForEntity(prestamosUrl, String.class);
         return ResponseEntity.ok("Respuesta del microservicio de préstamos: " + response.getBody());
+    }
+
+    // Invoca al microservicio de gestión de usuarios
+    @GetMapping("/usuarios")
+    public ResponseEntity<String> obtenerUsuarios() {
+        // Añade la invocación al microservicio de gestión de usuarios (gestionusuario)
+        String usuariosUrl = "http://gestionusuario:5000/api/usuarios"; 
+        ResponseEntity<String> response = restTemplate.getForEntity(usuariosUrl, String.class);
+        return ResponseEntity.ok("Respuesta del microservicio de usuarios: " + response.getBody());
     }
 }

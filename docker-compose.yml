@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+  # Servicio MySQL para Inventario y Orquestador
   mysql:
     image: mysql:8.0
     container_name: mysql_db
@@ -17,6 +18,7 @@ services:
       - mynetwork
     restart: always
 
+  # Servicio PostgreSQL para Préstamos
   postgres:
     image: postgres:13
     environment:
@@ -30,6 +32,19 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  # Servicio MongoDB para Gestión de Usuarios
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mynetwork
+    restart: always
+
+  # Servicio del Orquestador (Biblioteca)
   orquestador:
     build: ./microservicio-biblioteca
     container_name: biblioteca_orquestador
@@ -45,6 +60,7 @@ services:
       - mysql
     restart: always
 
+  # Servicio de Inventario
   inventario:
     build: ./microservicio-inventario
     container_name: spring_app
@@ -60,6 +76,7 @@ services:
       - mysql
     restart: always
 
+  # Servicio de Préstamos
   prestamo-service:
     build: ./Prestamo
     container_name: prestamo_service
@@ -72,6 +89,20 @@ services:
     depends_on:
       - postgres
 
+  # Servicio de Gestión de Usuarios (C# con MongoDB)
+  gestionusuario:
+    build: ./GestionUsuarioBiblioteca
+    container_name: gestionusuario_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:5000"
+    networks:
+      - mynetwork
+    depends_on:
+      - mongo
+    restart: always
+
 networks:
   mynetwork:
     driver: bridge
@@ -79,3 +110,4 @@ networks:
 volumes:
   mysql_data:
   pg_data:
+  mongo-data:
