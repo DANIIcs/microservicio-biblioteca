@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   mysql:
     image: mysql
@@ -13,8 +15,21 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: prestamos_db
+    ports:
+      - "5432:5432"
+    networks:
+      - mynetwork
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
   orquestador:
-    build: .
+    build: ./microservicio-biblioteca
     container_name: biblioteca_orquestador
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/biblioteca_db
@@ -27,9 +42,22 @@ services:
     depends_on:
       - mysql
 
+  prestamo-service:
+    build: ./Prestamo
+    container_name: prestamo_service
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/prestamos_db
+    ports:
+      - "8001:8001"
+    networks:
+      - mynetwork
+    depends_on:
+      - postgres
+
 networks:
   mynetwork:
     driver: bridge
 
 volumes:
   mysql_data:
+  pg_data:
