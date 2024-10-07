@@ -97,7 +97,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "5000:8081"
+      - "5000:5001"
     networks:
       - mynetwork
     depends_on:
