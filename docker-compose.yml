@@ -17,7 +17,7 @@ services:
     restart: always
 
   # Servicio PostgreSQL para Préstamos
-  db:
+  postgres:
     image: postgres:13
     environment:
       POSTGRES_USER: postgres
@@ -79,13 +79,13 @@ services:
     build: ../Prestamo
     container_name: prestamo_service
     environment:
-      - DATABASE_URL=postgresql://postgres:password@postgres:db/prestamos_db
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/prestamos_db
     ports:
       - "8004:8004"
     networks:
       - mynetwork
     depends_on:
-      - db
+      - postgres
 
   # Servicio de Gestión de Usuarios (C# con MongoDB)
   gestionusuario:
