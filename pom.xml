@@ -26,6 +26,7 @@
     <!-- Dependencies section -->
     <dependencies>
 
+
         <!-- Spring Boot Web for building web applications and REST services -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
