@@ -85,7 +85,7 @@ services:
     networks:
       - mynetwork
     depends_on:
-      - postgres
+      - db
 
   # Servicio de Gestión de Usuarios (C# con MongoDB)
   gestionusuario:
