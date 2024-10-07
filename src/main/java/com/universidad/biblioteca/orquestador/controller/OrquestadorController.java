@@ -27,7 +27,7 @@ public class OrquestadorController {
     @GetMapping("/prestamos")
     public ResponseEntity<String> obtenerPrestamos() {
         // Cambia "localhost" por el nombre del servicio definido en docker-compose (prestamo-service)
-        String prestamosUrl = "http://prestamo-service:8001/api/prestamos"; 
+        String prestamosUrl = "http://prestamo-service:8004/api/prestamos";
         ResponseEntity<String> response = restTemplate.getForEntity(prestamosUrl, String.class);
         return ResponseEntity.ok("Respuesta del microservicio de préstamos: " + response.getBody());
     }
