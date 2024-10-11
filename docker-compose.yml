@@ -30,6 +30,12 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # Servicio MongoDB para Gestión de Usuarios
   mongo:
     image: mongo
@@ -61,7 +67,7 @@ services:
   # Servicio de Inventario
   inventario:
     build: ../microservicio-inventario
-    container_name: spring_app
+    container_name: spring-app
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/inventario_db
       - SPRING_DATASOURCE_USERNAME=mysqluser
@@ -85,7 +91,8 @@ services:
     networks:
       - mynetwork
     depends_on:
-      - postgres
+      postgres:
+          condition: service_healthy
 
   # Servicio de Gestión de Usuarios (C# con MongoDB)
   gestionusuario:
@@ -93,7 +100,7 @@ services:
     build:
       context: ../GestionUsuarioBiblioteca
       dockerfile: GestionUsuarioBiblioteca/Dockerfile
-    container_name: gestionusuario_service
+    container_name: gestionusuarioservice
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:

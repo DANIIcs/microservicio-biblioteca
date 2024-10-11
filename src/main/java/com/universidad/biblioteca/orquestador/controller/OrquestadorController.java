@@ -36,7 +36,7 @@ public class OrquestadorController {
     @GetMapping("/usuarios")
     public ResponseEntity<String> obtenerUsuarios() {
         // Añade la invocación al microservicio de gestión de usuarios (gestionusuario)
-        String usuariosUrl = "http://gestionusuario:5000/api/User"; 
+        String usuariosUrl = "http://gestionusuario:5001/api/User";
         ResponseEntity<String> response = restTemplate.getForEntity(usuariosUrl, String.class);
         return ResponseEntity.ok("Respuesta del microservicio de usuarios: " + response.getBody());
     }
